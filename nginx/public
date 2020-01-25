@@ -1,0 +1,14 @@
+server {
+listen 80;
+listen [::]:80;
+
+server_name PUBLIC;
+
+root /var/www/public/;
+index index.html;
+autoindex on;
+
+location / {
+try_files $uri $uri/ =404;
+}
+}

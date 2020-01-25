@@ -1,0 +1,56 @@
+nginx:    
+  build: ./nginx/  
+  container_name: nginx-container  
+  ports:  
+    - 80:80  
+  links:  
+    - php  
+  volumes_from:  
+    - app-data  
+  
+php:    
+  build: ./php/  
+  container_name: php-container  
+  expose:  
+    - 9000  
+  links:  
+    - mysql  
+  volumes_from:  
+    - app-data  
+      
+app-data:    
+  image: php:7.0-fpm
+  container_name: app-data-container  
+  volumes:  
+    - ./www/html/:/var/www/html/  
+  command: “true”  
+      
+mysql:    
+  image: mysql:latest  
+  container_name: mysql-container  
+  volumes_from:  
+    - mysql-data
+  volumes:
+    - ./mysql/:/etc/mysql/conf.d  
+  environment:  
+    - MYSQL_ROOT_PASSWORD=rootpass  
+    - MYSQL_DATABASE=smarthome  
+    - MYSQL_USER=andjel  
+    - MYSQL_PASSWORD=andjelsmartpass  
+      
+mysql-data:    
+  image: mysql:latest  
+  container_name: mysql-data-container  
+  volumes:  
+    - /var/lib/mysql  
+  command: "true" 
+
+phpmyadmin:    
+  image: phpmyadmin/phpmyadmin  
+  container_name: phpmyadmin-container  
+  ports:  
+    - 8080:80  
+  links:  
+    - mysql  
+  environment:  
+    PMA_HOST: mysql
