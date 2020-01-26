@@ -1,16 +1,14 @@
 <?php
 
-
-use Repository\HomeRepository;
+use SmartHome\Repository\HomeRepository;
 
 class Test extends CI_Controller
 {
 	public function index()
 	{
 		echo "Test";
-		
-		$homeRepository = HomeRepository::getInstance();
 
+		$homeRepository = HomeRepository::getInstance();
 		$firstHome = $homeRepository->findBy(['id' => 1]);
 
 		var_dump($firstHome);
