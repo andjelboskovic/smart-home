@@ -1,8 +1,9 @@
 <?php
-namespace Fishingbooker\Infrastructure;
+namespace SmartHome\Infrastructure;
 
+use PDO;
 
-class PDOTransactional extends \PDO
+class PDOTransactional extends PDO
 {
 
     private $transactionCounter = 0;

@@ -1,21 +1,14 @@
 <?php
 
-namespace Fishingbooker\Repository;
+namespace SmartHome\Repository;
 
-use Fishingbooker\Persistence\Entity;
-use Fishingbooker\Repository\Utils\SortablePageableDto;
+use SmartHome\Persistence\Entity;
 
 interface RepositoryInterface
 {
     public function getById($id);
 
-    public function getByIds(array $ids, ?SortablePageableDto $sort = null): array;
-
-    public function countAll();
-
-    public function getAll($limit = null, $offset = null, $orderBy = null);
-
-    public function iterateAll(): iterable;
+    public function getByIds(array $ids): array;
 
     public function getTableName(): string;
 
@@ -23,15 +16,7 @@ interface RepositoryInterface
 
     public function save(Entity $entity, $updateId = false);
 
-    public function delete(Entity $entity);
+    public function findBy($criteria = null);
 
-    public function replace(Entity $entity);
-
-    public function findBy($criteria = null, $dto = null, $customCriteria = null);
-
-    public function findOneBy($criteria = null, $dto = null, $customCriteria = null);
-
-    public function countBy($criteria = null, $customCriteria = null);
-
-    public function getPdoConnection();
+    public function findOneBy($criteria = null);
 }

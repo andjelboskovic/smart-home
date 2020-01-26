@@ -1,12 +1,7 @@
 <?php
-namespace Fishingbooker\Infrastructure\Exceptions;
+namespace SmartHome\Infrastructure\Exceptions;
 
-/**
- * Class DBConnectionException
- * Exception thrown by DBConnection when initialization
- * is incomplete.
- * @package Fishingbooker\Infrastructure\Exceptions
- */
+
 class DBConnectionException extends \Exception
 {
 
