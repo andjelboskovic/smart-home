@@ -11,16 +11,16 @@ class DisplayWeatherData extends CI_Controller
     public function index()
     {
         echo "Latest data";
-        $devices = $this->db->get('device')->result_array();
-        foreach ($devices as $device) {
-            echo "<div style='margin-top:20px;margin-left:20px'>{$device['name']}";
+		$temperatureAndHumidityReaders = $this->db->get('component')->where('component_type_id', 1)->result_array();
+        foreach ($temperatureAndHumidityReaders as $temperatureAndHumidityReader) {
+            echo "<div style='margin-top:20px;margin-left:20px'>{$temperatureAndHumidityReader['name']}";
             echo "<table style='width:40%'>";
             echo "<tr>";
             echo "<th style='width:150px'>Time</th>";
             echo "<th>Temperature</th>";
             echo "<th>Humidity</th>";
             echo " </tr>";
-            $query = $this->db->select('*')->from('temperature_reads')->where('device_id', $device['id'])->order_by('date_created', 'DESC')->limit(10)->get();
+            $query = $this->db->select('*')->from('weather_reads')->where('device_id', $temperatureAndHumidityReader['id'])->order_by('date_created', 'DESC')->limit(10)->get();
             foreach ($query->result_array() as $read) {
                 echo "<tr>";
                 echo "<td>{$read['date_created']}</td>";
