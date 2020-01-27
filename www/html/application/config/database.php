@@ -76,8 +76,8 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> 'mysql:host=mysql;dbname=smarthome;charset=utf8',
 	'hostname' => '',
-	'username' => 'andjel',
-	'password' => 'andjelsmartpass',
+	'username' => 'root',
+	'password' => 'rootpass',
 	'database' => 'smarthome',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
