@@ -22,7 +22,7 @@
   },
   "autoload": {
 	"psr-4": {
-	  "Fishingbooker\\": "codebase"
+	  "SmartHome\\": "codebase/"
 	}
   }
 }

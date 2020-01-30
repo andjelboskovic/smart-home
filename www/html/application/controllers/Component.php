@@ -1,8 +1,6 @@
 <?php
 
 
-use SmartHome\Exception\PlatformException;
-
 class Component extends MY_Controller
 {
 	const PARAMETER_HOME_ID = 'home_id';
@@ -24,6 +22,8 @@ class Component extends MY_Controller
 		self::PARAMETER_ID,
 		self::IS_ACTIVE
 	];
+
+	const TABLE_NAME = 'component';
 
 	public function index(): void
 	{
@@ -82,7 +82,7 @@ class Component extends MY_Controller
 		}
 	}
 
-	private function getComponentData(array $criteria): array
+	public function getComponentData(array $criteria): array
 	{
 		$query = $this->db->select('*')->from('component');
 		if (array_key_exists(self::PARAMETER_DEVICE_ID, $criteria)) {

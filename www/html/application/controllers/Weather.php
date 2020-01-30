@@ -19,11 +19,9 @@ class Weather extends MY_Controller
 	public function index(): void
 	{
 		echo "Latest data";
-		$temperatureAndHumidityReaders = $this->db->select('*')
-			->from('component')
-			->where('component_type_id', 1)
-			->get()
-			->result_array();
+		$temperatureAndHumidityReaders = (new Component())->getComponentData([
+			Component::PARAMETER_COMPONENT_ID => 1
+		]);
 		foreach ($temperatureAndHumidityReaders as $temperatureAndHumidityReader) {
 //			echo "<div style='margin-top:20px;margin-left:20px'>{$temperatureAndHumidityReader['name']}";
 			echo "<table style='width:40%'>";
@@ -32,22 +30,39 @@ class Weather extends MY_Controller
 			echo "<th>Temperature</th>";
 			echo "<th>Humidity</th>";
 			echo " </tr>";
-			$query = $this->db->select('*')
-				->from(self::TABLE_NAME)
-				->where('component_id', $temperatureAndHumidityReader['id'])
-				->order_by('date_created', 'DESC')
-				->limit(10)
-				->get();
-			foreach ($query->result_array() as $read) {
+			$weather_reads = $this->getWeatherData([
+				self::PARAMETER_COMPONENT_ID => $temperatureAndHumidityReader['id']
+			], [
+				self::PARAMETER_DATE_CREATED => 'DESC'
+			], 10);
+			foreach ($weather_reads as $weather_read) {
 				echo "<tr>";
-				echo "<td>{$read['date_created']}</td>";
-				echo "<td>{$read['temperature']}°C</td>";
-				echo "<td>{$read['humidity']}%</td>";
+				echo "<td>{$weather_read[self::PARAMETER_DATE_CREATED]}</td>";
+				echo "<td>{$weather_read[self::PARAMETER_TEMPERATURE]}°C</td>";
+				echo "<td>{$weather_read[self::PARAMETER_HUMIDITY]}%</td>";
 				echo "</tr>";
 			}
 			echo "</table>";
 			echo "</div>";
 		}
+	}
+
+	private function getWeatherData(array $criteria, $orderBy = null, $limit = null): array
+	{
+		$query = $this->db->select('*')->from(self::TABLE_NAME);
+		if (array_key_exists(self::PARAMETER_COMPONENT_ID, $criteria)) {
+			$query = $query->where(self::PARAMETER_COMPONENT_ID,
+				$criteria[self::PARAMETER_COMPONENT_ID]);
+		}
+		if ($orderBy !== null) {
+			$column = array_key_first($orderBy);
+			$query->order_by($column, $orderBy[$column]);
+		}
+		if ($limit !== null) {
+			$query->limit($limit);
+		}
+
+		return $query->get()->result_array();
 	}
 
 	public function fetch()
@@ -82,17 +97,6 @@ class Weather extends MY_Controller
 				throw new Exception("Parameter [{$parameter}] has to be numeric.");
 			}
 		}
-	}
-
-	private function getWeatherData(array $criteria): array
-	{
-		$query = $this->db->select('*')->from(self::TABLE_NAME);
-		if (array_key_exists(self::PARAMETER_COMPONENT_ID, $criteria)) {
-			$query = $query->where(self::PARAMETER_COMPONENT_ID,
-				$criteria[self::PARAMETER_COMPONENT_ID]);
-		}
-
-		return $query->get()->result_array();
 	}
 
 	public function addWeatherData(): bool
@@ -144,7 +148,7 @@ class Weather extends MY_Controller
 			self::PARAMETER_DATE_UPDATED => $timeNow
 		]);
 
-		return $this->db->where('id', $componentId)
+		return $this->db->where(self::PARAMETER_COMPONENT_ID, $componentId)
 			->where(self::PARAMETER_DATE_CREATED, $timeNow)
 			->where(self::PARAMETER_DATE_UPDATED, $timeNow)
 			->get(self::TABLE_NAME)

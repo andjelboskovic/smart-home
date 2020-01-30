@@ -1,11 +1,13 @@
 <?php
 
-use SmartHome\Repository\HomeRepository;
+
+use SmartHome\TestFest;
 
 class Test extends CI_Controller
 {
 	public function index()
 	{
-		echo "Test";
+		echo (new TestFest)->works();
+
 	}
 }

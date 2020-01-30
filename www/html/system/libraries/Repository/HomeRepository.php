@@ -1,11 +1,7 @@
 <?php
 
 
-namespace Repository;
-
-
 use SmartHome\Persistence\Home;
-use SmartHome\Repository\AbstractRepository;
 
 class HomeRepository extends AbstractRepository
 {
