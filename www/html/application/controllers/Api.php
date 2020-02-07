@@ -1,8 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require FCPATH . 'vendor/autoload.php';
+
 use chriskacerguis\RestServer\RestController;
-use chriskacerguis\RestServer\Format;
 use SmartHome\Exception\PlatformException;
 use SmartHome\Repository\ComponentRepository;
 use SmartHome\Repository\ComponentTypeRepository;
