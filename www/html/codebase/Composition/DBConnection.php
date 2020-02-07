@@ -1,15 +1,14 @@
 <?php
 
-namespace SmartHome\Infrastructure;
+namespace SmartHome\Composition;
 
 use PDO;
 use PDOException;
-use SmartHome\Infrastructure\Exceptions\DBConnectionException;
+use SmartHome\Composition\Exceptions\DBConnectionException;
 
 class DBConnection
 {
 	private static $driver_pdo = "pdo";
-
 	private static $config_dsn = "dsn";
 	private static $config_driver = "driver";
 	private static $config_host = "host";
@@ -22,9 +21,6 @@ class DBConnection
 
 	/** @var  DBConnection */
 	private static $instance;
-	/** @var  DBConnection */
-	private static $readonlyInstance;
-
 	/** @var  PDOTransactional */
 	private $pdoConnection;
 	/** @var array */
@@ -32,9 +28,7 @@ class DBConnection
 
 	public function __construct($config)
 	{
-		$this->validateConfig($config);
 		$this->initializeConfiguration($config);
-
 		try {
 			$this->pdoConnection = new PDOTransactional(
 				$this->config[self::$config_dsn],
@@ -50,13 +44,15 @@ class DBConnection
 
 	private function validateConfig($config): void
 	{
-		if (!isset($config[self::$config_dsn]) === true) {
-			if (!isset($config[self::$config_driver]) === true) {
+		var_dump($config[self::$config_dsn]);
+		var_dump(isset($config[self::$config_dsn]));
+		if ($config[self::$config_dsn] !== null) {
+			if ($config[self::$config_driver] !== null) {
 				throw new DBConnectionException("Missing DSN connection string and driver configuration!",
 					DBConnectionException::CONFIG_MISSING);
 			}
 
-			if (!isset($config[self::$config_host]) === true) {
+			if ($config[self::$config_host] !== null) {
 				throw new DBConnectionException("Missing DSN connection string and host configuration!",
 					DBConnectionException::CONFIG_MISSING);
 			}
@@ -85,14 +81,13 @@ class DBConnection
 		}
 
 		if (empty($this->config[self::$config_dsn]) === true) {
-			$this->config[self::$config_dsn] = $this->createDsnString($config);
+			$this->config[self::$config_dsn] = $this->createDsnString();
 		}
 	}
 
-	private function createDsnString(array $config): void
+	private function createDsnString(): string
 	{
-		//mysql:host=mysql;dbname=smarthome;charset=utf8
-		return $config['dsn'];
+		return 'mysql:host=mysql;dbname=smarthome;charset=utf8';
 	}
 
 	public static function getConnection($config = null): PDOTransactional

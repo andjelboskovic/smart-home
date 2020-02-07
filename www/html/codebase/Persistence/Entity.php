@@ -21,12 +21,15 @@ class Entity implements JsonSerializable
 	private static $entityFields = [];
 	private static $joinedTablesOnFields = [];
 
-	/** @var int */
+	/**
+	 * @field(type=int)
+	 * @var int|null
+	 */
 	protected $id;
 
 	private $forceInsert = false;
 
-	protected function __construct($dto = [])
+	public function __construct($dto = [])
 	{
 		$this->initializeFromDto($dto);
 	}
@@ -89,7 +92,7 @@ class Entity implements JsonSerializable
 		return $dto;
 	}
 
-	public function getId(): int
+	public function getId(): ?int
 	{
 		return $this->id;
 	}
@@ -208,4 +211,5 @@ class Entity implements JsonSerializable
 			return $e->getId();
 		}, $entities));
 	}
+
 }

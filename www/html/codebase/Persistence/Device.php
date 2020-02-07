@@ -3,10 +3,20 @@
 
 namespace SmartHome\Persistence;
 
-use DateTime;
 
-class Home extends Entity
+use DateTime;
+use SmartHome\Repository\HomeRepository;
+
+class Device extends Entity
 {
+//	private $id;
+
+	/**
+	 * @field(type=int)
+	 * @var int
+	 */
+	private $home_id;
+
 	/**
 	 * @field(type=string)
 	 * @var string
@@ -14,7 +24,7 @@ class Home extends Entity
 	private $name;
 
 	/**
-	 * @field(type=string)
+	 * @field(type=datetime)
 	 * @var DateTime
 	 */
 	private $date_created;
@@ -24,6 +34,26 @@ class Home extends Entity
 	 * @var DateTime|null
 	 */
 	private $date_updated;
+
+	/** @var Home */
+	private $home;
+
+	/**
+	 * @return int
+	 */
+	public function getHomeId(): int
+	{
+		return $this->home_id;
+	}
+
+	/**
+	 * @param int $home_id
+	 */
+	public function setHomeId(int $home_id): void
+	{
+		$this->home_id = $home_id;
+		$this->home = null;
+	}
 
 	/**
 	 * @return string
@@ -71,6 +101,26 @@ class Home extends Entity
 	public function setDateUpdated(?DateTime $date_updated): void
 	{
 		$this->date_updated = $date_updated;
+	}
+
+	/**
+	 * @return Home
+	 */
+	public function getHome(): Home
+	{
+		if (empty($this->home)) {
+			$this->home = HomeRepository::getInstance()->getById($this->home);
+		}
+		return $this->home;
+	}
+
+	/**
+	 * @param Home $home
+	 */
+	public function setHome(Home $home): void
+	{
+		$this->home = $home;
+		$this->home_id = $home->getId();
 	}
 
 }

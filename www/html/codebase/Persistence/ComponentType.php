@@ -3,10 +3,12 @@
 
 namespace SmartHome\Persistence;
 
+
 use DateTime;
 
-class Home extends Entity
+class ComponentType extends Entity
 {
+
 	/**
 	 * @field(type=string)
 	 * @var string
@@ -14,13 +16,13 @@ class Home extends Entity
 	private $name;
 
 	/**
-	 * @field(type=string)
+	 * @field(type=datetime)
 	 * @var DateTime
 	 */
 	private $date_created;
 
 	/**
-	 * @field(type=datetime)
+	 * @field(type=string)
 	 * @var DateTime|null
 	 */
 	private $date_updated;

@@ -1,5 +1,5 @@
 <?php
-namespace SmartHome\Infrastructure;
+namespace SmartHome\Composition;
 
 use PDO;
 

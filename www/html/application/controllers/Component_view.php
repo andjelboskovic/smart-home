@@ -1,7 +1,14 @@
 <?php
 
 
-class Component extends MY_Controller
+use SmartHome\Persistence\Device;
+use SmartHome\Persistence\Home;
+use SmartHome\Repository\ComponentRepository;
+use SmartHome\Repository\DeviceRepository;
+use SmartHome\Repository\HomeRepository;
+use SmartHome\Persistence\Component;
+
+class Component_view extends MY_Controller
 {
 	const PARAMETER_HOME_ID = 'home_id';
 	const PARAMETER_DEVICE_ID = 'device_id';
@@ -20,7 +27,7 @@ class Component extends MY_Controller
 
 	const REQUIRED_EDIT_PARAMETERS = [
 		self::PARAMETER_ID,
-		self::IS_ACTIVE
+		self::PARAMETER_IS_ACTIVE
 	];
 
 	const TABLE_NAME = 'component';
@@ -28,22 +35,25 @@ class Component extends MY_Controller
 	public function index(): void
 	{
 		echo "Latest data<br>";
-		$homes = $this->db->get('home')->result_array();
+		$homes = HomeRepository::getInstance()->getAll();
+		/** @var Home $home */
 		foreach ($homes as $home) {
-			$devices = $this->db->select('*')
-				->from('device')
-				->where(self::PARAMETER_HOME_ID, $home[self::PARAMETER_ID])
-				->get()
-				->result_array();
+			$devices = DeviceRepository::getInstance()->findBy(
+				[
+					self::PARAMETER_HOME_ID => $home->getId()
+				]
+			);
+			/** @var Device $device */
 			foreach ($devices as $device) {
-				$component = $this->db->select('*')
-					->from('component')
-					->where(self::PARAMETER_COMPONENT_ID, 2)
-					->where(self::PARAMETER_DEVICE_ID, $device[self::PARAMETER_ID])
-					->get()
-					->result_array()[0];
-				echo "<br>'" . $device['name'] . "' has a component turned : "
-					. ($component[self::IS_ACTIVE] ? self::IS_ACTIVE_ON : self::IS_ACTIVE_OFF);
+				/** @var Component $component */
+				$component = ComponentRepository::getInstance()->findOneBy(
+					[
+						self::PARAMETER_COMPONENT_ID => 2,
+						self::PARAMETER_DEVICE_ID => $device->getId()
+					]
+				);
+				echo "<br>'" . $device->getName() . "' has a component turned : "
+					. ($component->isActive() ? self::IS_ACTIVE_ON : self::IS_ACTIVE_OFF);
 			}
 		}
 	}
@@ -133,7 +143,7 @@ class Component extends MY_Controller
 	private function editComponent(int $componentId, bool $isActive): array
 	{
 		$timeNow = date("Y-m-d H:i:s");
-		
+
 		$this->db->where('id', $componentId);
 		$this->db->update('component', [
 			self::PARAMETER_IS_ACTIVE => $isActive,
